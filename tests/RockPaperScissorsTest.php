@@ -44,6 +44,19 @@
             $this->assertEquals("Player 1 wins with Scissors", $result);
         }
 
+        function test_draw()
+        {
+
+            $test_RockPaperScissors = new RockPaperScissors;
+            $first_input = array('player'=>"Player 1", 'choice'=>"Paper", 'beats'=>"Rock");;
+            $second_input = array('player'=>"Player 2", 'choice'=>"Paper", 'beats'=>"Rock");;
+;
+
+            $result = $test_RockPaperScissors->winChecker($first_input, $second_input);
+
+            $this->assertEquals("Draw", $result);
+        }
+
     }
 
 

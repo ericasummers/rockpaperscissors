@@ -3,7 +3,9 @@
     {
         function winChecker($player1input, $player2input)
         {
-            var_dump($player1input);
+            if($player1input['choice']===$player2input['choice']){
+                return "Draw";
+            }
             if($player1input['beats']===$player2input['choice']){
                 return $player1input['player'] . " wins with " . $player1input['choice'];
             }else{
