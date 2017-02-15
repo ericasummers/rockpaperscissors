@@ -20,8 +20,10 @@
             </div>
 
             <div class="result">
-                {% if results is not empty %}
-                    <h2>{{ results }}</h2>
+                {% if all_games is not empty %}
+                    {% for game in all_games %}
+                        <h2>{{ game }}</h2>
+                    {% endfor %}
                 {% endif %}
             </div>
         </div>

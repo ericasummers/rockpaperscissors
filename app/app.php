@@ -6,9 +6,17 @@
     use Symfony\Component\Debug\Debug;
     Debug::enable();
 
+    session_start();
+
+    if (empty($_SESSION['game_rounds'])) {
+        $_SESSION['game_rounds'] = array();
+    }
+
     $app = new Silex\Application();
 
     $app['debug']=true;
+
+
 
     $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'twig.path' => __DIR__.'/../views'
@@ -23,39 +31,20 @@
         $new_game = new RockPaperScissors();
         $player1Input=$_POST['player1Input'];
         $player2Input =$_POST['player2Input'];
-        if(strtolower($_POST['player1Input'])==="r"){
-            $player1Input = "Rock";
-            $player1Beats = "Scissors";
-        }else if(strtolower($_POST['player1Input'])==="s"){
-            $player1Input = "Scissors";
-            $player1Beats = "Paper";
-        }else if(strtolower($_POST['player1Input'])==="p"){
-            $player1Input = "Paper";
-            $player1Beats = "Rock";
-        }else{
-            return $app['twig']->render('form.html.twig',array("results" => "Please Enter a correct input"));
+
+
+
+        $player1 = $new_game->player1InputSetup($player1Input);
+        $player2 = $new_game->player2InputSetup($player2Input);
+
+        if($player1==="invalid" || $player2==="invalid"){
+            return $app['twig']->render('form.html.twig',array("results" => "Please enter a valid move"));
         }
-
-        if(strtolower($_POST['player2Input'])==="r"){
-            $player2Beats = "Scissors";
-            $player2Input = "Rock";
-        }else if(strtolower($_POST['player2Input'])==="s"){
-            $player2Beats = "Paper";
-            $player2Input = "Scissors";
-        }else if(strtolower($_POST['player2Input'])==="p"){
-            $player2Beats = "Rock";
-            $player2Input = "Paper";
-        }else{
-            return $app['twig']->render('form.html.twig',array("results" => "Please Enter a correct input"));
-        }
-
-        $player1 = array('player'=>"Player 1", 'choice'=>$player1Input, 'beats'=>$player1Beats);
-        $player2 = array('player'=>"Player 2", 'choice'=>$player2Input, 'beats'=>$player2Beats);
-
         $results = $new_game->winChecker($player1, $player2);
+        $new_game->save($results);
 
 
-        return $app['twig']->render('form.html.twig',array("results" => $results));
+        return $app['twig']->render('form.html.twig',array("all_games" => RockPaperScissors::getAll()));
     });
 
     return $app;
